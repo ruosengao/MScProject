@@ -1,8 +1,15 @@
 # TODOs
 
-- demo
+- bm1d
     - documentation
-    - explanations via math formula
     - estimate expected exit time
-    - animated process
-    - 2D & 3D processes
+    - control y_lim
+    - handle np.nan
+    - add legend to show initial points
+- bm_demo
+    - explanations via math formula
+
+<!--
+- imm regis
+- cw appeal
+-->

@@ -1,28 +1,34 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+from .bm_interface import *
 
-class WienerProcess1D():
-    def __init__(self, T, W0=0.0, dt=0.01):
-        self.W0 = W0
+
+class BrownianMotion1D(BrownianMotion):
+    def __init__(self, T, B0=0.0, dt=0.01):
+        self.B0 = B0
         self.dt = dt
         self.T = T
-        self.build_process()
+        self._build_process()
 
-    def build_process(self):
+    def _build_process(self):
         rng = np.random.default_rng()
-        num_steps = np.int64(self.T/self.dt) - 1
-        steps = rng.normal(0.0, self.dt, num_steps)
-        Wts = np.cumsum(steps)
-        self.Wts = np.insert(Wts, 0, self.W0)
+        num_increments = np.int64(self.T/self.dt) - 1
+        increments = rng.normal(0.0, np.sqrt(self.dt), num_increments)
+        Bts = np.cumsum(increments)
+        self.Bts = np.insert(Bts, 0, self.B0)
 
     def plot_up_to(self, ax, t):
         index = np.int64(t/self.dt)
         ts = np.arange(0, self.T, self.dt)
-        ax.plot(ts[:index], self.Wts[:index])
+        ax.plot(ts[:index], self.Bts[:index])
 
 
-class Doamin1D():
+class Domain1D(Domain):
+    pass
+
+
+class OpenInterval(Domain1D):
     def __init__(self, lower_bd=-np.inf, upper_bd=np.inf):
         self.bds = np.array([lower_bd, upper_bd])
 
@@ -34,9 +40,9 @@ class Doamin1D():
         fnt_bds = np.where(np.isfinite(self.bds), self.bds, ax.get_ylim())
         ax.fill_between([0,t], fnt_bds[0], fnt_bds[1], facecolor="gray",
                         alpha=0.5)
-        
 
-class ProcessRegister1D():
+
+class ProcessRegister1D(ProcessRegister):
     def __init__(self):
         self.prcs = np.array([])
         self.dmns = np.array([])
@@ -54,7 +60,7 @@ class ProcessRegister1D():
         # A helper function that computes the pair-wise exit time.
         def pw_exit_time(dp_pair):
             dmn, prc = dp_pair
-            filt = dmn.is_in(prc.Wts)
+            filt = dmn.is_in(prc.Bts)
             if np.all(filt):
                 return np.nan
             exit_index = np.argmin(filt)
