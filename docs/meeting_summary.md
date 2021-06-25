@@ -2,7 +2,7 @@
 Please read this meeting summary alongside the [weekly agenda](weekly_agenda.md).
 
 <!-- WEEK 1 -->
-## Week 1 (11 - 17 May)
+## Week 1 (11 May)
 
 ### Key Terms to Look up
 The following concepts and theorems help to prepare the ground for understanding the objectives of the project.
@@ -24,22 +24,16 @@ The following concepts and theorems help to prepare the ground for understanding
 ---
 
 <!-- WEEK 2 -->
-## Week 2 (18 - 24 May)
+## Week 2 (18 May)
 
 ### Key Concepts to Look up
 > - classical solution, strong solution, weak solution, mild solution,
 > - exist time, occupation time.
 
-### On Paper Reading
-> Read [\[BaCo1988\]](#BaCo1988) and extract main conclusions.
-
-### On Code Implementation
-> Simulate 1D Brownian motions.
-
 ---
 
 <!-- WEEK 3 -->
-## Week 3 (25 - 31 May)
+## Week 3 (25 May)
 
 ### On Code Implementation
 > - Perform a simulation study on Monte Carlo method;
@@ -51,8 +45,57 @@ The following concepts and theorems help to prepare the ground for understanding
 > - Q: How is this project related to statistics?<br>
     Hints: simulation, Monte Carlo method.
 
-### Elena's Task
-> - Send Ruosen Pablo's paper on variational method.
+---
+
+<!-- WEEK 4 -->
+## Week 4 (01 June)
+
+### On Midterm Presentation
+> - Motivations and initiative;
+> - The equation and probabilistic representation;
+> - Plots showing realizations of BM;
+> - Script and beamer ready by week 6 meeting.
+
+### On Probabilistic Solutions
+> - Research on the probabilistic solutions for PDEs, carefully read the abstract and introductions.
+> - Take notes on solutions.
+
+---
+
+<!-- WEEK 5 -->
+## Week 5 (08 June)
+
+### On Solution List
+> - Detail and expand the list.
+
+### On Midterm Presentation
+> - Pros of probabilistic representations:
+>   - Numerical solution via Monte Carlo,
+>   - Less restrictive on the exponent *p* and domain *D*.
+> - Future plans
+>   - Optimization: parallel computing, advanced simulation methods,
+>   - Simulation study
+
+---
+
+<!-- WEEK 6 -->
+## Week 6 (15 June)
+
+Went through the reprint paper.
+
+### On Midterm Presentation
+> - Add literature review in progression section,
+> - Add some reference work
+
+---
+
+<!-- WEEK 7 -->
+## Week 7 (22 June)
+
+### On Code Implementation
+> - Run on a cluster,
+> - Improve the precision of estimate,
+> - Simulate the expected occupation time when *U, V* are balls.
 
 ---
 

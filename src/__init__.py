@@ -1,2 +1,3 @@
 from .bm1d import *
-from .bm3d import *
+from .simulator3d import *
+from .plotter3d import *

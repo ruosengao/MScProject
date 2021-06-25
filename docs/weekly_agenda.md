@@ -15,12 +15,12 @@
 ### Book Reading
 - [\[St2008\]](#St2008) chapter 2;
 - [\[Ev2010\]](#Ev2010) sections 6.2, 6.3;
-- [\[MöPe2010\]](#MöPe2010) chapters 0, 1 (selected parts).
+- [\[MöPe2010\]](#MöPe2010) chapters 0, 1.
 
-### Code Implementation
-- Simulate 1D Brownian motions;
-- Plot multiple realizations over an open interval;
-- Estimate the expected exit time via Monte Carlo method.
+### Code Implementation (1D Trial)
+- Brownian motion and bounded open interval;
+- Plot multiple realizations;
+- Estimate expected exit time via Monte Carlo method.
 
 ---
 
@@ -30,20 +30,67 @@
 ### Book Reading
 - [\[St2008\]](#St2008) chapter 3;
 - [\[Ev2010\]](#Ev2010) sections 6.4, 6.5;
-- [\[MöPe2010\]](#MöPe2010) chapters 2, 3, 5, 6 (selected parts).
-
-### Paper Reading
-- Read [\[BaCo1988\]](#BaCo1988) and write a synopsis.
+- [\[MöPe2010\]](#MöPe2010) chapters 2, 3.
 
 ### Code Implementation
-- Simulate 3D Brownian motions;
-- Implement some parametric 3D domains, e.g. balls and annulus;
-- (if time permits) Study the matplotlib.animation API.
+- Brownian motion.
+
+
+---
+
+<!-- WEEK 4 -->
+## Week 4 (01 - 07 June)
+
+### Book Reading
+- [\[St2008\]](#St2008) chapter 4;
+- [\[MöPe2010\]](#MöPe2010) chapters 4, 5, 6, 7, 8.
+
+### Paper Reading
+- [\[Pa1996\]](#Pa1996) on main conclusions only.
+
+### Code Implementation
+- Balls and annulus.
+
+---
+
+<!-- WEEK 5 -->
+## Week 5 (08 - 14 June)
+
+### Book Reading
+- [\[KaSh1991\]](#Kash1991) chapter 4.
+
+### Code Implementation
+- Plotter.
+
+### Miscellaneous
+- Probabilistic solution list;
+- Midterm presentation.
+
+---
+
+<!-- WEEK 6 -->
+## Week 6 (15 - 21 June)
+
+### Code Implementation
+- Estimate expected exit time and occupation time.
+
+### Miscellaneous
+- Expand probabilistic solution list;
+- Midterm presentation.
+
+---
+
+<!-- WEEK 7 -->
+## Week 7 (22 - 28 June)
+
+### Code Implementation
+- Parallel realizations via `multiprocessing` module;
+- Switch to `Numba` JIT-compiler.
 
 ---
 
 <!-- REFERENCES -->
-<!-- MLA 8th edition-->
+<!-- MLA 8th edition -->
 ## References
 
 ### Books
@@ -59,3 +106,6 @@
 ### Articles
 - <a name="BaCo1988"></a>
     \[BaCo1988\] Bahri, A., and J. M. Coron. “On a Nonlinear Elliptic Equation Involving the Critical Sobolev Exponent: The Effect of the Topology of the Domain.” *Communications on Pure and Applied Mathematics*, vol. 41, no. 3, Wiley Subscription Services, Inc., A Wiley Company, 1988, pp. 253–94, doi:10.1002/cpa.3160410302.
+- <a name="Pa1996"></a>
+    \[Pa1996\] Padilla, Pablo. “The Effect of the Shape of the Domain on the Existence of Solutions of an Equation Involving the Critical Sobolev Exponent.” *Journal of Differential Equations*, vol. 124, no. 2, Elsevier Inc, 1996, pp. 449–71, doi:10.1006/jdeq.1996.0019.
+
