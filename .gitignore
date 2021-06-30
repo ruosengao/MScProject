@@ -1,7 +1,7 @@
 __pycache__/
 
-midterm_presentation/*
-!midterm_presentation/*.pdf
+midterm/*
+!midterm/*.pdf
 
 notes/*
 !notes/*.pdf
