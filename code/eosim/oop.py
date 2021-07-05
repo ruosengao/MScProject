@@ -10,21 +10,21 @@ _dim = lambda pt: np.array(pt).size
 class BrownianMotion():
     def __init__(self, b0, max_t, dt):
         self.dt = dt
-        num_steps = np.int_(max_t/dt) - 1
-        increments = _rng.normal(0., np.sqrt(dt), size=(num_steps, _dim(b0)))
+        num = np.int_(np.rint(max_t/dt))
+        increments = _rng.normal(0., np.sqrt(dt), size=(num-1, _dim(b0)))
         self.bts = np.cumsum(np.insert(increments, 0, b0, axis=0), axis=0)
-        self.ts = np.linspace(0., max_t, np.int_(max_t/dt), False)
 
     def get_exit_time(self, indicator):
         bool_arr = indicator(self.bts)
         idx = np.argmin(bool_arr)
         if idx == 0:
             raise RuntimeError("exit time is out of reach")
-        return self.ts[idx]
+        return idx * self.dt
 
-    def get_occupation_time(self, indicator, t):
-        bool_arr = indicator(self.bts)[:np.int_(t/self.dt)]
-        return np.sum(bool_arr) * self.dt
+    def get_occupation_time(self, indicator, stop_time):
+        bool_arr = indicator(self.bts)
+        idx = np.int_(np.rint(stop_time/self.dt))
+        return np.sum(bool_arr[:idx]) * self.dt
 
 
 class Domain(ABC):
@@ -55,7 +55,7 @@ class OpenBall(Domain):
         return c_distances < self.r
 
     def generate_grid(self, dx):
-        xs = np.linspace(-self.r, self.r, np.int_(2*self.r/dx)+1)
+        xs = np.linspace(-self.r, self.r, np.int_(np.rint(2*self.r/dx))+1)
         xxs = tuple(xs for _ in range(self.dim))
         grid = np.array(np.meshgrid(*xxs)).T.reshape(-1, self.dim) + self.c
         idx = np.nonzero(self.indicator(grid))
@@ -78,7 +78,7 @@ class OpenAnnulus(Domain):
         return self.r1 < c_distances < self.r2
 
     def generate_grid(self, dx):
-        xs = np.linspace(-self.r2, self.r2, np.int_(2*self.r2/dx)+1)
+        xs = np.linspace(-self.r2, self.r2, np.int_(np.rint(2*self.r2/dx))+1)
         xxs = tuple(xs for _ in range(self.dim))
         grid = np.array(np.meshgrid(*xxs)).T.reshape(-1, self.dim) + self.c
         idx = np.nonzero(self.indicator(grid))

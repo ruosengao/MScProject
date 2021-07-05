@@ -8,11 +8,13 @@ import time
 from tabulate import tabulate
 
 from . import oop
+from . import parallel
 from . import procedural as pro
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("mode", choices=["oop", "pro"],
+    parser.add_argument("mode", choices=["oop", "parallel", "procedural"],
         help="mode of simulation")
     parser.add_argument("simulator", choices=["exit-time", "occup-time"],
         help="simulator")
@@ -36,7 +38,7 @@ if __name__ == "__main__":
             else: # name == "OpenAnnulus"
                 c, r1, r2 = para
                 return oop.OpenAnnulus(c, r1, r2)
-        else: # args.mode == "pro"
+        else: # args.mode == "parallel" or args.mode == "procedural"
             return tuple(domain)
 
     if args.simulator == "exit-time":
@@ -50,18 +52,25 @@ if __name__ == "__main__":
     if (args.mode, args.simulator) == ("oop", "exit-time"):
         est = oop.ExitTimeSimulator(
             domain, data["max_t"], data["dt"], data["dx"], data["n"]
-        ).run()
+            ).run()
     elif (args.mode, args.simulator) == ("oop", "occup-time"):
         est = oop.OccupationTimeSimulator(
             domain_d, domain_v, data["max_t"], data["dt"], data["dx"], data["n"]
-        ).run()
-    elif (args.mode, args.simulator) == ("pro", "exit-time"):
+            ).run()
+    elif (args.mode, args.simulator) == ("parallel", "exit-time"):
+        est = parallel.simulate_max_expected_exit_time(
+            domain, data["max_t"], data["dt"], data["dx"], data["n"])
+    elif (args.mode, args.simulator) == ("parallel", "occup-time"):
+        est = parallel.simulate_min_expected_occupation_time(
+            domain_d, domain_v, data["max_t"], data["dt"], data["dx"], data["n"]
+            )
+    elif (args.mode, args.simulator) == ("procedural", "exit-time"):
         est = pro.simulate_max_expected_exit_time(
             domain, data["max_t"], data["dt"], data["dx"], data["n"])
-    else: # (args.mode, args.simulator) == ("pro", "occup-time")
+    else: # (args.mode, args.simulator) == ("procedural", "occup-time")
         est = pro.simulate_min_expected_occupation_time(
             domain_d, domain_v, data["max_t"], data["dt"], data["dx"], data["n"]
-        )
+            )
     t1 = time.perf_counter()
 
     # print message
