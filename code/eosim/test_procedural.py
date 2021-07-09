@@ -1,7 +1,6 @@
 import unittest
 
 import numpy as np
-from numpy.random import sample
 
 from . import procedural as pro
 

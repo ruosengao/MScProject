@@ -4,14 +4,13 @@ import numpy as np
 
 
 _rng = np.random.default_rng()
-_dim = lambda pt: np.array(pt).size
 
 
 class BrownianMotion():
     def __init__(self, b0, max_t, dt):
         self.dt = dt
         num = np.int_(np.rint(max_t/dt))
-        increments = _rng.normal(0., np.sqrt(dt), size=(num-1, _dim(b0)))
+        increments = _rng.normal(0., np.sqrt(dt), size=(num-1, np.size(b0)))
         self.bts = np.cumsum(np.insert(increments, 0, b0, axis=0), axis=0)
 
     def get_exit_time(self, indicator):
@@ -43,12 +42,12 @@ class Domain(ABC):
 
 class OpenBall(Domain):
     def __init__(self, c, r):
-        self.dim = _dim(c)
+        self.dim = np.size(c)
         self.c = c
         self.r = r
 
     def __str__(self):
-        return f"{self.dim}D {type(self).__name__} ({self.c}, {self.r})"
+        return f"{type(self).__name__} ({self.c}, {self.r})"
 
     def indicator(self, pts):
         c_distances = np.linalg.norm(pts-self.c, axis=1)
@@ -64,14 +63,13 @@ class OpenBall(Domain):
 
 class OpenAnnulus(Domain):
     def __init__(self, c, r1, r2):
-        self.dim = _dim(c)
+        self.dim = np.size(c)
         self.c = c
         self.r1 = r1
         self.r2 = r2
 
     def __str__(self):
-        return (f"{self.dim}D {type(self).__name__} "
-                f"({self.c}, {self.r1}, {self.r2})")
+        return f"{type(self).__name__} ({self.c}, {self.r1}, {self.r2})"
 
     def indicator(self, pts):
         c_distances = np.linalg.norm(pts-self.c, axis=1)
@@ -92,9 +90,6 @@ class Simulator(ABC):
         self.dx = dx
         self.n = n
 
-    def generate_samples(self, b0):
-        return [BrownianMotion(b0, self.max_t, self.dt) for _ in range(self.n)]
-
     @abstractmethod
     def run(self):
         pass
@@ -106,10 +101,11 @@ class ExitTimeSimulator(Simulator):
         self.domain = domain
 
     def expected_exit_time(self, b0):
-        samples = self.generate_samples(b0)
         indicator = self.domain.indicator
-        sw_f = lambda bm: bm.get_exit_time(indicator)
-        times = np.vectorize(sw_f)(samples)
+        def sw_f(_):
+            bm = BrownianMotion(b0, self.max_t, self.dt)
+            return bm.get_exit_time(indicator)
+        times = np.vectorize(sw_f)(np.arange(self.n))
         return np.mean(times)
 
     def run(self):
@@ -127,15 +123,14 @@ class OccupationTimeSimulator(Simulator):
         self.domain_v = domain_v
 
     def expected_occupation_time(self, b0):
-        samples = self.generate_samples(b0)
         indicator_d = self.domain_d.indicator
-        sw_f = lambda bm: bm.get_exit_time(indicator_d)
-        exit_times = np.vectorize(sw_f)(samples)
-        
         indicator_v = self.domain_v.indicator
-        sw_g = lambda bm, t: bm.get_occupation_time(indicator_v, t)
-        occupation_times = np.vectorize(sw_g)(samples, exit_times)
-        return np.mean(occupation_times)
+        def sw_f(_):
+            bm = BrownianMotion(b0, self.max_t, self.dt)
+            exit_time = bm.get_exit_time(indicator_d)
+            return bm.get_occupation_time(indicator_v, exit_time)
+        times = np.vectorize(sw_f)(np.arange(self.n))
+        return np.mean(times)
 
     def run(self):
         grid = self.domain_v.generate_grid(self.dx)
@@ -143,3 +138,24 @@ class OccupationTimeSimulator(Simulator):
         return np.min(times)
 
     min_expected_occupation_time = run
+
+
+def main(simulator, **kwargs):
+    def domain_parser(domain):
+        name, *para = domain
+        if name == OpenBall.__name__:
+            return OpenBall(*para)
+        else: # name == OpenAnnulus.__name__
+            return OpenAnnulus(*para)
+    
+    if simulator == "exit-time":
+        domain = domain_parser(kwargs["domain"])
+        sim = ExitTimeSimulator(domain,
+            kwargs["max_t"], kwargs["dt"], kwargs["dx"], kwargs["n"])
+        return sim.run()
+    else: # simulator == "occup-time"
+        domain_d = domain_parser(kwargs["domain_d"])
+        domain_v = domain_parser(kwargs["domain_v"])
+        sim = OccupationTimeSimulator(domain_d, domain_v,
+            kwargs["max_t"], kwargs["dt"], kwargs["dx"], kwargs["n"])
+        return sim.run()
