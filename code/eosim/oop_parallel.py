@@ -1,9 +1,12 @@
 from abc import ABC, abstractmethod
 
 import numpy as np
+import psutil
+from joblib import Parallel, delayed
 
 
 rng = np.random.default_rng()
+n_cores = psutil.cpu_count(logical=False)
 
 
 class BrownianMotion():
@@ -102,10 +105,11 @@ class ExitTimeSimulator(Simulator):
 
     def expected_exit_time(self, b0):
         indicator = self.domain.indicator
-        def sw_f(_):
+        def sw_f():
             bm = BrownianMotion(b0, self.max_t, self.dt)
             return bm.get_exit_time(indicator)
-        times = np.vectorize(sw_f)(np.arange(self.n))
+        times = Parallel(n_jobs=n_cores)(
+            delayed(sw_f)() for _ in np.arange(self.n))
         return np.mean(times)
 
     def run(self):
@@ -125,11 +129,12 @@ class OccupationTimeSimulator(Simulator):
     def expected_occupation_time(self, b0):
         indicator_d = self.domain_d.indicator
         indicator_v = self.domain_v.indicator
-        def sw_f(_):
+        def sw_f():
             bm = BrownianMotion(b0, self.max_t, self.dt)
             exit_time = bm.get_exit_time(indicator_d)
             return bm.get_occupation_time(indicator_v, exit_time)
-        times = np.vectorize(sw_f)(np.arange(self.n))
+        times = Parallel(n_jobs=n_cores)(
+            delayed(sw_f)() for _ in np.arange(self.n))
         return np.mean(times)
 
     def run(self):

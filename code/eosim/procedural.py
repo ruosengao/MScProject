@@ -1,13 +1,13 @@
 import numpy as np
 
 
-_rng = np.random.default_rng()
+rng = np.random.default_rng()
 
 
 # sampling, exit and occupation times
 def generate_sample(b0, max_t, dt):
     num = np.int_(np.rint(max_t/dt))
-    increments = _rng.normal(0., np.sqrt(dt), size=(num-1, np.size(b0)))
+    increments = rng.normal(0., np.sqrt(dt), size=(num-1, np.size(b0)))
     return np.cumsum(np.insert(increments, 0, b0, axis=0), axis=0)
 
 def get_exit_time(sample, dt, indicator):
@@ -31,7 +31,10 @@ def indicator_func(domain):
         return lambda pts: np.linalg.norm(pts-c, axis=-1) < r
     else: # name == "OpenAnnulus"
         c, r1, r2 = para
-        return lambda pts: r1 < np.linalg.norm(pts-c, axis=-1) < r2
+        def ind(pts):
+            c_distances = np.linalg.norm(pts-c, axis=-1)
+            return (r1<c_distances) & (c_distances<r2)
+        return ind
 
 def generate_grid(domain, dx):
     name, *para = domain
@@ -84,7 +87,7 @@ def main(simulator, **kwargs):
     if simulator == "exit-time":
         return simulate_max_expected_exit_time(kwargs["domain"],
             kwargs["max_t"], kwargs["dt"], kwargs["dx"], kwargs["n"])
-    else: # simulator == "occup-time"
+    else: # simulator == "occupation-time"
         return simulate_min_expected_occupation_time(
             kwargs["domain_d"], kwargs["domain_v"],
             kwargs["max_t"], kwargs["dt"], kwargs["dx"], kwargs["n"])

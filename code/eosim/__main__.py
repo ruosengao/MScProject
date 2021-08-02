@@ -10,9 +10,9 @@ from tabulate import tabulate
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("mode", choices=["oop", "procedural"],
+    parser.add_argument("mode", choices=["oop", "oop-parallel", "procedural"],
         help="mode of simulation")
-    parser.add_argument("simulator", choices=["exit-time", "occup-time"],
+    parser.add_argument("simulator", choices=["exit-time", "occupation-time"],
         help="simulator")
     parser.add_argument("config", help="configuration file")
     args = parser.parse_args()
@@ -23,11 +23,12 @@ if __name__ == "__main__":
     # compute result
     t0 = time.perf_counter()
     if args.mode == "oop":
-        from . import oop
-        result = oop.main(args.simulator, **data)
+        from . import oop as mode
+    elif args.mode == "oop-parallel":
+        from . import oop_parallel as mode
     else: # args.mode == "procedural"
-        from . import procedural
-        result = procedural.main(args.simulator, **data)
+        from . import procedural as mode
+    result = mode.main(args.simulator, **data)
     t1 = time.perf_counter()
 
     # print message
@@ -40,7 +41,7 @@ if __name__ == "__main__":
     if args.simulator == "exit-time":
         msg.insert(0, [f"ExitTimeSimulator ({args.mode})"])
         msg.insert(1, ["Domain", data["domain"]])
-    else: # args.simulator == "occup-time"
+    else: # args.simulator == "occupation-time"
         msg.insert(0, [f"OccupationTimeSimulator ({args.mode})"])
         msg.insert(1, ["Domain D, V",
             f'{data["domain_d"]},\n{data["domain_v"]}'])
