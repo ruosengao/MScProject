@@ -4,18 +4,18 @@
 ## Usage
 Change directory:
 ```sh
-$ cd code
+cd code
 ```
 Show help message:
 ```sh
-$ python3 -m eosim -h
+python3 -m eosim -h
 ```
 Run simulations:
 ```sh
-$ python3 -m eosim oop-parallel exit-time config/exit_time_config.json
+python3 -m eosim oop-parallel exit-time config/exit_time_config.json
 ```
 ```sh
-$ python3 -m eosim oop-parallel occupation-time config/occupation_time_config.json
+python3 -m eosim oop-parallel occupation-time config/occupation_time_config.json
 ```
 
 <!-- LICENSE -->
